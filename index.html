@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhoseNote? - Send Anonymous Messages</title>
+
+
+
+  <link rel="stylesheet" href="style.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(-45deg, #fbeaff, #eecbff, #e6baff, #d7b5f9);
+      background-size: 600% 600%;
+      animation: softMove 30s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+
+    }
+
+    @keyframes softMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .floating-heart {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-image: url('https://cdn-icons-png.flaticon.com/512/833/833472.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      animation: floatHeart 8s linear infinite;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    @keyframes floatHeart {
+      0% { transform: translateY(0) scale(0.8); opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+    }
+
+    header {
+      z-index: 2;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      fill: #bb83bf;
+      filter: drop-shadow(0 0 5px rgba(255,255,255,0.7));
+    }
+
+    .title {
+      font-size: 2rem;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 30px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      height: 24px;
+      overflow: hidden;
+      animation: floatWave 3s ease-in-out infinite;
+    }
+
+    @keyframes floatWave {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px) rotate(-1deg); }
+    }
+
+    form {
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 20px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    input, textarea {
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    textarea {
+      resize: none;
+      height: 120px;
+    }
+
+    button {
+      padding: 14px;
+      background: linear-gradient(45deg, #c084fc, #e0aaff);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 1rem;
+      box-shadow: 0 5px 15px rgba(192, 132, 252, 0.4);
+      animation: bounceIn 0.6s ease;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      60% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    button:hover {
+      background: linear-gradient(45deg, #b573f2, #d08fff);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(192, 132, 252, 0.6);
+    }
+
+    button:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 10px rgba(192, 132, 252, 0.4);
+    }
+
+    
+
+   @keyframes popIn {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+
+    .popup h3 {
+      font-size: 1.2rem;
+      color: #c86fc9;
+      margin-bottom: 8px;
+    }
+
+    .popup span {
+      font-size: 0.95rem;
+      color: #6f4784;
+    }
+
+    footer {
+      margin-top: 40px;
+      color: #fff;
+      font-size: 1rem;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      z-index: 2;
+    }
+
+    @media (max-width: 480px) {
+      .title {
+        font-size: 1.5rem;
+      }
+    }
+
+
+ 
+    
+  </style>
+</head>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const texts = [
+        'Whispers from the unknown 💌',
+        'Anonymous thoughts, real feelings 🫣',
+        'Hidden words, loud hearts ♥️',
+        'No names. Just emotions ✨',
+        'Let your heart speak — secretly ✨',
+        'Love notes without names 💭',
+        "The Man Who Can't Be Moved "
+      ];
+
+      const typedText = document.getElementById('typed-text');
+      let i = 0, j = 0, isDeleting = false;
+
+      function type() {
+        typedText.textContent = texts[i].substring(0, j);
+
+        if (!isDeleting && j < texts[i].length) {
+          j++;
+          setTimeout(type, 80);
+        } else if (isDeleting && j > 0) {
+          j--;
+          setTimeout(type, 40);
+        } else {
+          isDeleting = !isDeleting;
+          if (!isDeleting) i = (i + 1) % texts.length;
+          setTimeout(type, 1000);
+        }
+      }
+
+      type();
+    });
+</script>
+
+<body>
+
+  <!-- Theme Toggle Button -->
+<!-- 🎨 Change Color Button -->
+<button id="themeToggle" style="position: fixed; top: 20px; right: 20px; z-index: 999; padding: 8px 14px; background: rgba(255,255,255,0.7); border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; color: #000000;">
+  🎨 Change Color
+</button>
+
+
+
+
+<!-- 🟣 Floating Toggle Button (small like Change Color) -->
+<button id="toggle-wall" style="
+  position: fixed;
+  top: 65px;
+  right: 24px;
+  z-index: 100;
+  padding: 8px 14px;
+  background-color: #e3e2e5;
+  color: rgb(21, 21, 21);
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+">
+  🗨️ Freedom Wall
+</button>
+
+<!-- 🧱 Hidden Freedom Wall Panel -->
+<div id="freedom-wall" style="
+  display: none;
+  position: fixed;
+  top: 150px;
+  right: 20px;
+  background-color: rgba(217, 147, 214, 0.98);
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  width: 260px;
+  z-index: 999;
+  color: white;
+  font-size: 14px;
+">
+  <h3 style="margin-top: 0; font-size: 16px;">Freedom Wall</h3>
+
+  <ul id="freedomMessages" style="
+    max-height: 150px;
+    overflow-y: auto;
+    padding-left: 0;
+    list-style: none;
+    margin-bottom: 10px;
+  "></ul>
+
+  <form id="wall-form">
+    <textarea id="freedomMessage" placeholder="Type your message..." required style="
+      width: 100%;
+      height: 60px;
+      border-radius: 8px;
+      padding: 8px;
+      border: none;
+      resize: none;
+    "></textarea>
+    <button type="submit" style="
+      margin-top: 8px;
+      padding: 8px;
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+    ">Post</button>
+  </form>
+</div>
+
+
+
+
+
+  <div class="floating-heart" style="left: 10%; animation-delay: 0s;"></div>
+  <div class="floating-heart" style="left: 30%; animation-delay: 2s;"></div>
+  <div class="floating-heart" style="left: 60%; animation-delay: 4s;"></div>
+  <div class="floating-heart" style="left: 80%; animation-delay: 1s;"></div>
+
+  <header>
+    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 
+      4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 
+      19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    <div class="title">WhoseNote?</div>
+  </header>
+<div class="subtitle" id="subtitle">
+  <span id="typed-text"></span><span class="cursor">|</span>
+</div>
+
+
+ <form id="secret-form">
+    <input type="email" name="to_email" placeholder="Recipient's Email" required />
+    <input type="text" name="from_name" placeholder="Your Name (optional)" />
+    <textarea name="message" placeholder="Write your message here..." required></textarea>
+<button type="submit">💌 Send Anonymously</button>
+
+  </form>
+  <!-- ✅ Insert this after the form -->
+<div id="popup" class="popup" style="display: none;">
+  <h3>🎉 Message Sent!</h3>
+  <span>They won’t know it’s you. 👀</span>
+</div>
+
+  
+<!-- Optional Popup Styling -->
+<style>
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: #fff5fb;
+  padding: 20px 25px;
+  border-radius: 20px;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+  text-align: center;
+  z-index: 999;
+  border: 2px solid #f3c3eb;
+  opacity: 0;
+  animation: popIn 1s ease forwards;
+  max-width: 280px;
+  width: fit-content;
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.popup h3 {
+  font-size: 1.2rem;
+  color: #c86fc9;
+  margin-bottom: 8px;
+}
+
+.popup span {
+  font-size: 0.95rem;
+  color: #6f4784;
+}
+</style>
+
+
+
+
+<!-- EmailJS SDK -->
+ <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+  (function () {
+    emailjs.init("_XZbLIFnZA2IvsU2e");
+  })();
+
+  const form = document.getElementById('secret-form');
+  const button = form.querySelector('button');
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    button.disabled = true;
+    button.textContent = 'Sending... ✨';
+    button.style.opacity = 0.6;
+    button.style.transform = 'scale(0.95)';
+
+    // ⛔ Removed playClick() since it was undefined
+
+    emailjs.sendForm('service_9v3hth2', 'template_snihale', this)
+      .then(() => {
+        // ✅ Save to Google Sheet
+        fetch("https://script.google.com/macros/s/AKfycbzu9LqoaO_u_cvGwCXKmF-v5tG3-5fxAFxZLAcO7MNxmyyHk0sKvtoLpDsRystAWMA/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            to_email: form.to_email.value,
+            from_name: form.from_name.value || "Anonymous",
+            message: form.message.value,
+            device: navigator.userAgent
+          })
+        })
+          .then(res => res.text())
+          .then(res => console.log("Saved to Sheet:", res))
+          .catch(err => console.error("Sheet save error:", err));
+
+        // ✨ Reset and show success
+        setTimeout(() => {
+          form.reset();
+          button.disabled = false;
+          button.textContent = '💌 Send Anonymously';
+          button.style.opacity = 1;
+          button.style.transform = 'scale(1)';
+
+          launchConfetti(); // 🎉 Use better confetti effect
+          showPopup();      // ✅ Your custom popup
+        }, 500);
+      }, (error) => {
+        alert('Failed to send message. Please try again.');
+        console.error(error);
+        button.disabled = false;
+        button.textContent = '💌 Send Anonymously';
+        button.style.opacity = 1;
+        button.style.transform = 'scale(1)';
+      });
+  });
+
+  function showPopup() {
+    const popup = document.getElementById('popup');
+    popup.style.display = 'block';
+    setTimeout(() => {
+      popup.style.display = 'none';
+    }, 3000);
+  }
+
+  function launchConfetti() {
+    const duration = 3 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 999 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function () {
+      const timeLeft = animationEnd - Date.now();
+      if (timeLeft <= 0) return clearInterval(interval);
+      const particleCount = 50 * (timeLeft / duration);
+
+      confetti({
+        particleCount,
+        origin: {
+          x: randomInRange(0.1, 0.9),
+          y: Math.random() - 0.2
+        },
+        ...defaults
+      });
+    }, 250);
+  }
+</script>
+
+
+
+
+
+
+
+</script>
+
+</head>
+<footer class="simple-animated-footer">
+  don’t worry, no one will know... except me – Iezah 😏
+</footer>
+
+
+
+
+
+
+   </script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="theme.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

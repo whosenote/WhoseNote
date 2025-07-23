@@ -1,0 +1,91 @@
+.simple-animated-footer {
+  font-size: 15px;
+  margin-top: 40px;
+  text-align: center;
+  font-weight: 400;
+  color: #131112;
+  animation: fadeInOut 4s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+.typing-subtitle {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 8px;
+  font-family: 'Poppins', sans-serif;
+  color: #333; /* clean and readable */
+  min-height: 24px; /* to avoid layout shift */
+}
+
+.cursor {
+  display: inline-block;
+  margin-left: 2px;
+  animation: blink 0.8s steps(2, start) infinite;
+  color: #0a010a;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+#freedom-wall {
+  display: none;
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background-color: rgba(52, 124, 160, 0.95);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(85, 70, 70, 0.2);
+  width: 300px;
+  z-index: 999;
+}
+
+#toggle-wall {
+  position: fixed;
+  top: 70px; /* ilagay sa ilalim ng "Change Color" */
+  right: 20px;
+  background: linear-gradient(to right, #e0bbff, #cbaaff);
+  color: rgb(152, 86, 86);
+  font-weight: bold;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 1000;
+}
+
+
+  @media (max-width: 600px) {
+    #freedom-wall {
+      width: 90%;
+      left: 5%;
+      right: 5%;
+      top: 100px;
+    }
+
+    #toggle-wall {
+      top: 50px;
+      right: 10px;
+      font-size: 12px;
+      padding: 6px 10px;
+    }
+
+    #freedom-wall textarea {
+      min-height: 60px;
+    }
+  }
+
+  
