@@ -1,0 +1,71 @@
+.simple-animated-footer {
+  font-size: 15px;
+  margin-top: 40px;
+  text-align: center;
+  font-weight: 400;
+  color: #131112;
+  animation: fadeInOut 4s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+.typing-subtitle {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 8px;
+  font-family: 'Poppins', sans-serif;
+  color: #333; /* clean and readable */
+  min-height: 24px; /* to avoid layout shift */
+}
+
+.cursor {
+  display: inline-block;
+  margin-left: 2px;
+  animation: blink 0.8s steps(2, start) infinite;
+  color: #0a010a;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
+
+#freedom-wall {
+  display: none;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background-color: rgba(52, 124, 160, 0.95);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(85, 70, 70, 0.2);
+  width: 300px;
+  z-index: 999;
+}
+
+/* kapag may .show class, magiging visible at animated */
+#freedom-wall.show {
+  display: block !important;
+  opacity: 1;
+  transform: scale(1);
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
